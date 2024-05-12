@@ -5,9 +5,9 @@ import Dict exposing (Dict)
 
 
 type alias TournamentSummary = 
-  { id : Int
-  , name : String
-  }
+    { id : Int 
+    , name : String
+    }
 
 type alias Tournament =
   { id : Int
@@ -79,5 +79,6 @@ update msg model =
 
 view : Model -> Html Msg
 view model =
-    div [] []
+  div [] []
+
 
