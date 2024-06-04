@@ -6,6 +6,9 @@ import Http
 import Json.Decode as Decode exposing (Decoder, decodeString)
 import Json.Decode.Pipeline exposing (required, optional, hardcoded)
 import Platform.Cmd as Cmd
+import Browser exposing (Document)
+import Browser.Navigation as Nav
+import Url exposing (Url)
 
 type alias TournamentSummary = 
     { id : Int 
@@ -76,8 +79,17 @@ type alias Score =
 type alias Highscore =
   Dict String Score
 
+type Page
+  = Login 
+  | Home
+  | Tournament
+  | Highscore
+  | Match
+
 type alias Model = 
-  { tournaments : Dict String Tournament }
+  { page: Page
+  , tournaments : Dict String Tournament 
+  }
 
 
 type Msg
@@ -154,15 +166,21 @@ fetchTournaments =
     { url = ""
     , expect = Http.expectJson ReceieveTournaments (Decode.dict tournamentDecoder) }
 
-main : Program () Model Msg
-main =
-    Browser.element { init = init, update = update, subscriptions = always Sub.none, view = view }
 
-init : Model
+main =
+    Browser.application
+        { init = init
+        , update = update
+        , view = view
+        , subscriptions = always Sub.none
+        }
+
+
+init : ( Model, Cmd Msg )
 init =
     { tournaments = Dict.empty }
 
-update : Msg -> Model -> (Model, Cmd Msg)
+update : Msg -> Model -> (Model, Cmd.Cmd Msg)
 update msg model =
   case msg of
     RequestTournaments ->
